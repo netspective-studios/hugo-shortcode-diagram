@@ -1,0 +1,66 @@
+{{/* see: https://docs.kroki.io/kroki/setup/encode-diagram/#javascript */}}
+{{/* 
+    TODO: should contribute encodedKrokiUrlPath() and renderKrokiImage() to header by 
+    [checking for existence](https://gohugo.io/templates/shortcode-templates/#checking-for-existence) 
+
+    TODO: instead of just embedding diagrams using {{ .Inner }}, allow source images to be included
+    using (.Get "src") which would read the content from a local file or remote source and pass that
+    through Loki. That capability would allow larger files for excalidraw.com and other image types.
+*/}}
+
+{{ $kroki := newScratch }}
+{{ $kroki.Set "diagramName" (.Get "name") }}
+{{ $kroki.Set "srcTextType" (.Get "type") }}
+{{ $kroki.Set "outputImgNodeID" ($kroki.Get "diagramName") }}
+{{ $kroki.Set "srcTextNodeID" (printf "%s_kroki_src" ($kroki.Get "diagramName")) }}
+{{ $kroki.Set "host" "http://kroki.io" }}
+{{ $kroki.Set "outputType" "svg" }}
+
+<div id="{{ $kroki.Get "srcTextNodeID" }}" style="display: none;">
+{{ .Inner }}
+</div>
+<div id="{{ $kroki.Get "outputImgNodeID" }}">
+Rendering Kroki...
+</div>
+
+<script src="https://unpkg.com/pako@1.0.10/dist/pako_deflate.min.js"></script>
+<script type="text/javascript">
+    function encodedKrokiUrlPath(srcText, srcTextType) {
+        if((!srcText || srcText.trim().length == 0) || (!srcTextType || srcTextType.trim().length == 0)) {
+            srcText = "digraph G { Missing -> srcText }";
+            srcTextType = "dot";
+        }
+        let base64Encoded;
+        if (window.TextEncoder) {
+            base64Encoded = new TextEncoder('utf-8').encode(srcText);
+        } else {
+            let utf8 = unescape(encodeURIComponent(srcText));
+            let base64Encoded = new Uint8Array(utf8.length);
+            for (let i = 0; i < utf8.length; i++) { 
+                base64Encoded[i] = utf8.charCodeAt(i); 
+            }
+        }
+        let compressed = pako.deflate(base64Encoded, { level: 9, to: 'string' });
+        return btoa(compressed).replace(/\+/g, '-').replace(/\//g, '_');
+    }
+
+    function renderKrokiImage(srcText, srcTextType, outputNode, options) {
+        let krokiHost = options.krokiHost || "{{ $kroki.Get "host" }}"
+        let krokiURL = [
+            options.krokiHost || "http://kroki.io",
+            srcTextType,
+            options.outputType || "svg",
+            encodedKrokiUrlPath(srcText, srcTextType)
+        ].join('/')
+        outputNode.innerHTML = "<a href='"+ krokiURL +"'><img src='"+ krokiURL +"'/></a>"
+    }
+
+    renderKrokiImage(
+        document.getElementById("{{ $kroki.Get "srcTextNodeID" }}").innerText,
+        "{{ $kroki.Get "srcTextType" }}",
+        document.getElementById("{{ $kroki.Get "outputImgNodeID" }}"), {
+            krokiHost: "{{ $kroki.Get "host" }}",
+            outputType: "{{ $kroki.Get "outputType" }}"
+        }
+    )
+</script>
