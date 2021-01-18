@@ -7,9 +7,12 @@ The `diagram` Hugo shortcode renders [Kroki](https://kroki.io/) supported diagra
 Include this in your Hugo `config.yaml`:
 
 ```
-modules:
+module:
   imports:
-  - path: "github.com/adobe/hugo-spectrum/v1"
+    - path: github.com/netspective-studios/hugo-shortcode-diagram
+      mounts:
+        - source: shortcodes
+          target: layouts/shortcodes
 
 ```
 
