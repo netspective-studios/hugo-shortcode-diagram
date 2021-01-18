@@ -15,7 +15,17 @@ module:
           target: layouts/shortcodes
 
 ```
+If you are using `config.toml` in Hugo
 
+```
+[[module.imports]]
+path                              = "github.com/netspective-studios/hugo-shortcode-diagram"
+
+[[module.imports.mounts]]
+source                            = "shortcodes"
+target                            = "layouts/shortcodes"
+
+```
 ## Dot Sample
 
 ```html
