@@ -47,9 +47,9 @@ Rendering Kroki...
     function renderKrokiImage(srcText, srcTextType, outputNode, options) {
         let krokiHost = options.krokiHost || "{{ $kroki.Get "host" }}"
         let krokiURL = [
-            options.krokiHost || "http://kroki.io",
+            options.krokiHost || "{{ $kroki.Get "host" }}",
             srcTextType,
-            options.outputType || "svg",
+            options.outputType || "{{ $kroki.Get "outputType" }}",
             encodedKrokiUrlPath(srcText, srcTextType)
         ].join('/')
         outputNode.innerHTML = "<a href='"+ krokiURL +"'><img src='"+ krokiURL +"'/></a>"
