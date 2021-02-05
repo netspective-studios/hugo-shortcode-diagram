@@ -13,12 +13,21 @@
 {{ $kroki.Set "srcTextType" (.Get "type") }}
 {{ $kroki.Set "outputImgNodeID" ($kroki.Get "diagramName") }}
 {{ $kroki.Set "srcTextNodeID" (printf "%s_kroki_src" ($kroki.Get "diagramName")) }}
-{{ $kroki.Set "host" "http://kroki.io" }}
-{{ $kroki.Set "outputType" "svg" }}
+
+{{ if .Get "renderHost" }}
+    {{ $kroki.Set "host" (.Get "renderHost") }}
+{{ else if getenv "NS_HSC_DIAGRAM_RENDER_HOST" }}
+    {{ $kroki.Set "host" (getenv "NS_HSC_DIAGRAM_RENDER_HOST") }}
+{{ else }}
+    {{ $kroki.Set "host" "http://kroki.io" }}
+{{ end }}
 
 <div id="{{ $kroki.Get "srcTextNodeID" }}" style="display: none;">
 {{ .Inner }}
 </div>
+
+{{ $kroki.Set "outputType" "svg" }}
+
 <div id="{{ $kroki.Get "outputImgNodeID" }}">
 Rendering Kroki...
 </div>
