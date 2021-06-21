@@ -16,8 +16,8 @@
 
 {{ if .Get "renderHost" }}
     {{ $kroki.Set "host" (.Get "renderHost") }}
-{{ else if getenv "NS_HSC_DIAGRAM_RENDER_HOST" }}
-    {{ $kroki.Set "host" (getenv "NS_HSC_DIAGRAM_RENDER_HOST") }}
+{{/* else if getenv "NS_HSC_DIAGRAM_RENDER_HOST" }}
+    {{ $kroki.Set "host" (getenv "NS_HSC_DIAGRAM_RENDER_HOST") */}}   <!--  TODO: Krokie version need to be updated in https://diagram.infra.netspective.com/ --> T
 {{ else }}
     {{ $kroki.Set "host" "http://kroki.io" }}
 {{ end }}
