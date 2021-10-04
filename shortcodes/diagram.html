@@ -22,11 +22,10 @@
     {{ $kroki.Set "host" "http://kroki.io" }}
 {{ end */}}
 
-{{ $kroki.Set "host" "http://kroki.io" }}
+{{ $kroki.Set "host" "https://diagram.infra.netspective.com" }}
 <div id="{{ $kroki.Get "srcTextNodeID" }}" style="display: none;">
 {{ .Inner }}
 </div>
-
 {{ $kroki.Set "outputType" "svg" }}
 
 <div id="{{ $kroki.Get "outputImgNodeID" }}">
